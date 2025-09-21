@@ -1,0 +1,39 @@
+services:
+  # PHP Application
+  app:
+    build: .
+    container_name: craftshop-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    networks:
+      - craftshop-network
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: craftshop
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: craftshop-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: craftshop
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - craftshop-network
+
+networks:
+  craftshop-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
